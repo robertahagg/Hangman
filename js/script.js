@@ -2,7 +2,7 @@
 
 var wordList = ['Java', 'Chas', 'School', 'Programmer', 'Master', 'Battle']; // Lista med spelets alla ord
 var selectedWord; // Ett av orden valt av en slumpgenerator
-var letterBoxes; //Rutorna där bokstäverna ska stå
+var domLetterBoxes; //Rutorna där bokstäverna ska stå
 
 var hangmanImg; //Bild som kommer vid fel svar
 var hangmanImgNr; // Vilken av bilderna som kommer upp beroende på hur många fel du gjort
@@ -38,11 +38,33 @@ function randomizeWord() {
 // Funktionen som tar fram bokstävernas rutor, antal beror på vilket ord
 function prepareBoxes() {
     console.log("prepareBoxes");
+
+    var domLetterBoxesSection = document.getElementById('letterBoxes'); //find the element in HTML and saves it in a variable.
+
+    while (domLetterBoxesSection.hasChildNodes()) {
+        domLetterBoxesSection.removeChild(domLetterBoxesSection.lastChild);
+    }
+
+    var domUl = document.createElement('ul'); //creates a ul element and saves it in a variable.
+    domLetterBoxesSection.appendChild(domUl); // adds the Ul to the element in the DOM tree
+
+    domLetterBoxes = []; // empty array
+
     for (var i = 0; i < selectedWord.length; i++) {
-        letterBoxes[i] = "_";
+        var domLi = document.createElement('li'); // creates an element of type li
+        domUl.appendChild(domLi); // adds the li to the ul.
+        domLetterBoxes.push(domLi); // saves a pointer to the li in the array
+
+        //created element like: <input type="text" disabled="" value="_">
+        var domInput = document.createElement('input');
+        domLi.appendChild(domInput);
+        domInput.setAttribute("type", "text");
+        domInput.setAttribute("disabled", "");
+        domInput.setAttribute("value", "_");
 
     }
-    var remainingLetters = word.length;
+
+
 }
 
 // Funktion som körs när du trycker på bokstäverna och gissar bokstav
