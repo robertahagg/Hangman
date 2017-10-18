@@ -1,6 +1,6 @@
 // Globala variabler
 
-var wordList = ['Java', 'Chas', 'School', 'Programmer', 'Master', 'Battle']; // Lista med spelets alla ord
+var wordList = ['javascript', 'chas', 'school', 'programmer', 'master', 'explorer']; // Lista med spelets alla ord
 var selectedWord; // Ett av orden valt av en slumpgenerator
 var domLetterBoxes; //Rutorna där bokstäverna ska stå
 
@@ -12,7 +12,10 @@ var startGameBtn; // Knappen du startar spelet med
 var letterButtons; // Knapparna för bokstäverna
 var startTime; // Mäter tiden
 
+
 // Funktion som körs då hela webbsidan är inladdad, dvs då all HTML-kod är utförd
+
+
 // Initiering av globala variabler samt koppling av funktioner till knapparna.
 function init() {} // End init
 
@@ -67,10 +70,24 @@ function prepareBoxes() {
 
 }
 
+function letterPressed(domButton) {
+    var letter = domButton.getAttribute("value");
+    console.log("letterPressed: " + letter);
+
+}
 // Funktion som körs när du trycker på bokstäverna och gissar bokstav
 
 
 
 // Funktionen ropas vid vinst eller förlust, gör olika saker beroende av det
+function endGame(hangedMan) {
+    if (manHanged === true) {
+        msgElem.innerHTML = "Game Over. The correct word was " + selectedWord;
+    } else {
+        msgElem.innerHTML = "Congratulations, you have guessed the correct word";
+    }
+
+}
+
 
 // Funktion som inaktiverar/aktiverar bokstavsknapparna beroende på vilken del av spelet du är på
