@@ -21,12 +21,16 @@ function init() {} // End init
 
 window.onload = init; // Se till att init aktiveras då sidan är inladdad
 
+
 // Funktion som startar spelet vid knapptryckning, och då tillkallas andra funktioner
 
 function startGame() {
     console.log("startGame");
     randomizeWord();
     prepareBoxes();
+
+
+
 }
 
 // Funktion som slumpar fram ett ord
@@ -69,25 +73,47 @@ function prepareBoxes() {
 
 
 }
-
-function letterPressed(domButton) {
-    var letter = domButton.getAttribute("value");
-    console.log("letterPressed: " + letter);
-
-}
 // Funktion som körs när du trycker på bokstäverna och gissar bokstav
+
+function letterPressed(domButton) { // function that allows you to press on the buttons in the game
+    var guessedLetter = domButton.getAttribute("value");
+    console.log("guessedLetter: " + guessedLetter);
+
+    for (var j = 0; j < selectedWord.length; j++) {
+        if (selectedWord.charAt(j).toUpperCase() == guessedLetter.toUpperCase()) {
+            // Guessed letter is correct, the letter will appear in the corresponding letterBox.
+            domLetterBoxes[j].firstChild.setAttribute("value", guessedLetter.toUpperCase());
+        }
+    }
+    /* 
+        if(Fanns gissade bokstaven med?) {
+            if(är ordet klart?) {
+                så avsluta med grattis
+            }
+        } 
+        else {
+                så faila ett steg till på gubben
+                if(Är vi på sista steget?) {
+                    Avsluta med hängd gubbe.
+                }
+            }
+        
+        */
+}
+
 
 
 
 // Funktionen ropas vid vinst eller förlust, gör olika saker beroende av det
+
 function endGame(hangedMan) {
     if (manHanged === true) {
         msgElem.innerHTML = "Game Over. The correct word was " + selectedWord;
     } else {
         msgElem.innerHTML = "Congratulations, you have guessed the correct word";
     }
-
 }
+
 
 
 // Funktion som inaktiverar/aktiverar bokstavsknapparna beroende på vilken del av spelet du är på
