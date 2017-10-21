@@ -11,13 +11,17 @@ var msgElem; // Ger meddelande när spelet är över
 var startGameBtn; // Knappen du startar spelet med
 var letterButtons; // Knapparna för bokstäverna
 var startTime; // Mäter tiden
+var remainingLetters; //
 
 
 // Funktion som körs då hela webbsidan är inladdad, dvs då all HTML-kod är utförd
 
 
 // Initiering av globala variabler samt koppling av funktioner till knapparna.
-function init() {} // End init
+function init() {
+    console.log("init");
+    msgElem = document.getElementById("message");
+} // End init
 
 window.onload = init; // Se till att init aktiveras då sidan är inladdad
 
@@ -28,9 +32,14 @@ function startGame() {
     console.log("startGame");
     randomizeWord();
     prepareBoxes();
+    hangmanImgNr = 0;
 
-
-
+    var domLetterButtons = document.getElementById("letterButtons");
+    for (var i = 0; i < domLetterButtons.childElementCount; i++) {
+        debugger;
+        var domChild = domLetterButtons.children[i];
+        domChild.firstChild.removeAttribute("disabled");
+    }
 }
 
 // Funktion som slumpar fram ett ord
@@ -40,6 +49,7 @@ function randomizeWord() {
     selectedWord = wordList[Math.floor(Math.random() * wordList.length)];
 
     console.log("selectedWord: " + selectedWord);
+    remainingLetters = selectedWord.length;
 }
 
 // Funktionen som tar fram bokstävernas rutor, antal beror på vilket ord
@@ -76,41 +86,41 @@ function prepareBoxes() {
 // Funktion som körs när du trycker på bokstäverna och gissar bokstav
 
 function letterPressed(domButton) { // function that allows you to press on the buttons in the game
+    domButton.setAttribute("disabled", "");
     var guessedLetter = domButton.getAttribute("value");
     console.log("guessedLetter: " + guessedLetter);
+
+    var guessedLetterCorrect = false;
 
     for (var j = 0; j < selectedWord.length; j++) {
         if (selectedWord.charAt(j).toUpperCase() == guessedLetter.toUpperCase()) {
             // Guessed letter is correct, the letter will appear in the corresponding letterBox.
             domLetterBoxes[j].firstChild.setAttribute("value", guessedLetter.toUpperCase());
+            guessedLetterCorrect = true;
+            remainingLetters--; // Decrease by 1
         }
     }
-    /* 
-        if(Fanns gissade bokstaven med?) {
-            if(är ordet klart?) {
-                så avsluta med grattis
-            }
-        } 
-        else {
-                så faila ett steg till på gubben
-                if(Är vi på sista steget?) {
-                    Avsluta med hängd gubbe.
-                }
-            }
-        
-        */
+
+    if (guessedLetterCorrect) {
+        if (remainingLetters == 0) {
+            endGame(false);
+        }
+    } else {
+        hangmanImgNr++;
+        if (hangmanImgNr == 6) {
+            endGame(true);
+        }
+    }
 }
-
-
-
 
 // Funktionen ropas vid vinst eller förlust, gör olika saker beroende av det
 
 function endGame(hangedMan) {
-    if (manHanged === true) {
-        msgElem.innerHTML = "Game Over. The correct word was " + selectedWord;
+    if (hangedMan) {
+        window.alert("Game Over. The correct word was " + selectedWord);
+
     } else {
-        msgElem.innerHTML = "Congratulations, you have guessed the correct word";
+        window.alert("Congratulations, you have guessed the correct word");
     }
 }
 
