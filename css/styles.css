@@ -7,7 +7,7 @@
 
 body {
     color: #666;
-    font-family: sans-serif;
+    font-family: 'Roboto', sans-serif;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
@@ -22,7 +22,7 @@ body {
 }
 
 header {
-    background-color: silver;
+    background-color: #B48FBE;
     color: #fff;
     -webkit-box-flex: 0;
     -webkit-flex: none;
@@ -76,7 +76,7 @@ ul {
 }
 
 footer {
-    background-color: silver;
+    background-color: #B48FBE;
     border-top: 1px solid #666;
     margin-top: 20px;
     padding-top: 30px;
