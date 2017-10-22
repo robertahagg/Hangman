@@ -3,6 +3,7 @@
 var wordList = ['javascript', 'chas', 'school', 'programmer', 'master', 'explorer']; // List with game words
 var selectedWord; // Word selected by default
 var domLetterBoxes; //Letter boxes
+var isGameStarted = false;
 
 var hangmanImg; //Picture that appears if wrong answer guessed
 var hangmanImgNr; // Image that shows up depending on how many incorrect guesses
@@ -37,6 +38,7 @@ function startGame() {
     randomizeWord();
     prepareBoxes();
     domMessages.innerHTML = "";
+    isGameStarted = true;
 
     hangmanImgNr = 0;
     updateHangmanImage();
@@ -115,6 +117,10 @@ function updateHangmanImage() {
 // Function that allows you to press on the buttons in the game
 
 function letterPressed(domButton) {
+    if (!isGameStarted) {
+        return;
+    }
+
     domButton.setAttribute("disabled", "");
     var guessedLetter = domButton.getAttribute("value");
     console.log("guessedLetter: " + guessedLetter);
@@ -147,6 +153,7 @@ function letterPressed(domButton) {
 
 function endGame(hangedMan) {
     clearInterval(gameTimerId);
+    isGameStarted = false;
 
     if (hangedMan) {
         domMessages.innerHTML = "Game Over. The correct word was " + selectedWord;
