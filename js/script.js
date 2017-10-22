@@ -36,11 +36,15 @@ function startGame() {
     console.log("startGame");
     randomizeWord();
     prepareBoxes();
+    domMessages.innerHTML = "";
 
     hangmanImgNr = 0;
     updateHangmanImage();
 
     timeSpentInSeconds = 0;
+    if (typeof gameTimerId !== 'undefined') { // checks if the Id is defined. Previous timer is running
+        clearInterval(gameTimerId);
+    }
     gameTimerId = setInterval(function() { updateTimer() }, 1000);
 
     var domLetterButtons = document.getElementById("letterButtons");
