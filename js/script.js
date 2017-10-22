@@ -1,57 +1,59 @@
 // Globala variabler
 
 var wordList = ['javascript', 'chas', 'school', 'programmer', 'master', 'explorer']; // List with game words
-var selectedWord; // Word selected by default
-var domLetterBoxes; //Letter boxes
+var selectedWord; // randomly selected word
+var domLetterBoxes;
 var isGameStarted = false;
 
-var hangmanImg; //Picture that appears if wrong answer guessed
-var hangmanImgNr; // Image that shows up depending on how many incorrect guesses
+var hangmanImg; // Image that shows up depending on how many incorrect guesses
+var numberOfFailedAttempts;
 
 var domMessages; // Message when game is over
-var startGameBtn; // Start button
-var letterButtons; // Knapparna för bokstäverna
+var letterButtons;
 var domTimer;
 var gameTimerId;
 var timeSpentInSeconds;
-var remainingLetters; //
+var numberOfRemainingLetters;
 
 
 // Function that runs when the entire webpage is loaded, ie when all HTML code is performed
-
-
-// Initiation of global variables and the linking of functions to the buttons.
-
 function init() {
     console.log("init");
     domMessages = document.getElementById("message");
     domTimer = document.getElementById("timer");
-} // End init
+}
 
 window.onload = init; // Ensure that init is activated when the page is loaded
 
-
-//Function that starts the game by pressing the button, and then calls for other functions
-
 function startGame() {
     console.log("startGame");
+
     randomizeWord();
     prepareBoxes();
     domMessages.innerHTML = "";
     isGameStarted = true;
 
-    hangmanImgNr = 0;
+    numberOfFailedAttempts = 0;
     updateHangmanImage();
 
+    startTimer();
+    enableLetterButtons();
+}
+
+function startTimer() {
     timeSpentInSeconds = 0;
+
     if (typeof gameTimerId !== 'undefined') { // checks if the Id is defined. Previous timer is running
         clearInterval(gameTimerId);
     }
+
     gameTimerId = setInterval(function() { updateTimer() }, 1000);
+}
 
+function enableLetterButtons() {
     var domLetterButtons = document.getElementById("letterButtons");
-    for (var i = 0; i < domLetterButtons.childElementCount; i++) {
 
+    for (var i = 0; i < domLetterButtons.childElementCount; i++) {
         var domChild = domLetterButtons.children[i];
         domChild.firstChild.removeAttribute("disabled");
     }
@@ -62,24 +64,22 @@ function updateTimer() {
     domTimer.innerHTML = "Time spent: " + timeSpentInSeconds + " seconds.";
 }
 
-// Function that slums a word
-
 function randomizeWord() {
     console.log("randomizeWord");
 
     selectedWord = wordList[Math.floor(Math.random() * wordList.length)];
+    numberOfRemainingLetters = selectedWord.length;
 
     console.log("selectedWord: " + selectedWord);
-    remainingLetters = selectedWord.length;
 }
 
 // The function that displays the box for letters depending on the word
-
 function prepareBoxes() {
     console.log("prepareBoxes");
 
     var domLetterBoxesSection = document.getElementById('letterBoxes'); //Find the element in HTML and saves it in a variable.
 
+    // Remove old boxes
     while (domLetterBoxesSection.hasChildNodes()) {
         domLetterBoxesSection.removeChild(domLetterBoxesSection.lastChild);
     }
@@ -102,20 +102,15 @@ function prepareBoxes() {
         domInput.setAttribute("type", "text");
         domInput.setAttribute("disabled", "");
         domInput.setAttribute("value", "_");
-
     }
-
-
 }
 
 function updateHangmanImage() {
     var domHangmanImg = document.getElementById('hangman');
-    domHangmanImg.setAttribute("src", "images/h" + hangmanImgNr + "." + "png");
-
+    domHangmanImg.setAttribute("src", "images/h" + numberOfFailedAttempts + "." + "png");
 }
 
 // Function that allows you to press on the buttons in the game
-
 function letterPressed(domButton) {
     if (!isGameStarted) {
         return;
@@ -132,25 +127,24 @@ function letterPressed(domButton) {
             // Guessed letter is correct, the letter will appear in the corresponding letterBox.
             domLetterBoxes[j].firstChild.setAttribute("value", guessedLetter.toUpperCase());
             guessedLetterCorrect = true;
-            remainingLetters--; // Decrease by 1
+            numberOfRemainingLetters--; // Decrease by 1
         }
     }
 
     if (guessedLetterCorrect) {
-        if (remainingLetters == 0) {
+        if (numberOfRemainingLetters == 0) {
             endGame(false);
         }
     } else {
-        hangmanImgNr++;
+        numberOfFailedAttempts++;
         updateHangmanImage();
-        if (hangmanImgNr == 6) {
+        if (numberOfFailedAttempts == 6) {
             endGame(true);
         }
     }
 }
 
 // Function called if you have won or lost the game 
-
 function endGame(hangedMan) {
     clearInterval(gameTimerId);
     isGameStarted = false;
