@@ -1,48 +1,52 @@
 // Globala variabler
 
-var wordList = ['javascript', 'chas', 'school', 'programmer', 'master', 'explorer']; // Lista med spelets alla ord
-var selectedWord; // Ett av orden valt av en slumpgenerator
-var domLetterBoxes; //Rutorna där bokstäverna ska stå
+var wordList = ['javascript', 'chas', 'school', 'programmer', 'master', 'explorer']; // List with game words
+var selectedWord; // Word selected by default
+var domLetterBoxes; //Letter boxes
 
-var hangmanImg; //Bild som kommer vid fel svar
-var hangmanImgNr; // Vilken av bilderna som kommer upp beroende på hur många fel du gjort
+var hangmanImg; //Picture that appears if wrong answer guessed
+var hangmanImgNr; // Image that shows up depending on how many incorrect guesses
 
-var msgElem; // Ger meddelande när spelet är över
-var startGameBtn; // Knappen du startar spelet med
+var domMessages; // Message when game is over
+var startGameBtn; // Start button
 var letterButtons; // Knapparna för bokstäverna
-var startTime; // Mäter tiden
+var startTime; // Timer
 var remainingLetters; //
 
 
-// Funktion som körs då hela webbsidan är inladdad, dvs då all HTML-kod är utförd
+// Function that runs when the entire webpage is loaded, ie when all HTML code is performed
 
 
-// Initiering av globala variabler samt koppling av funktioner till knapparna.
+// Initiation of global variables and the linking of functions to the buttons.
+
 function init() {
     console.log("init");
-    msgElem = document.getElementById("message");
+    domMessages = document.getElementById("message");
 } // End init
 
-window.onload = init; // Se till att init aktiveras då sidan är inladdad
+window.onload = init; // Ensure that init is activated when the page is loaded
 
 
-// Funktion som startar spelet vid knapptryckning, och då tillkallas andra funktioner
+//Function that starts the game by pressing the button, and then calls for other functions
 
 function startGame() {
     console.log("startGame");
     randomizeWord();
     prepareBoxes();
     hangmanImgNr = 0;
+    updateHangmanImage();
+
 
     var domLetterButtons = document.getElementById("letterButtons");
     for (var i = 0; i < domLetterButtons.childElementCount; i++) {
-        debugger;
+
         var domChild = domLetterButtons.children[i];
         domChild.firstChild.removeAttribute("disabled");
     }
 }
 
-// Funktion som slumpar fram ett ord
+// Function that slums a word
+
 function randomizeWord() {
     console.log("randomizeWord");
 
@@ -52,27 +56,30 @@ function randomizeWord() {
     remainingLetters = selectedWord.length;
 }
 
-// Funktionen som tar fram bokstävernas rutor, antal beror på vilket ord
+// The function that displays the box for letters depending on the word
+
 function prepareBoxes() {
     console.log("prepareBoxes");
 
-    var domLetterBoxesSection = document.getElementById('letterBoxes'); //find the element in HTML and saves it in a variable.
+    var domLetterBoxesSection = document.getElementById('letterBoxes'); //Find the element in HTML and saves it in a variable.
 
     while (domLetterBoxesSection.hasChildNodes()) {
         domLetterBoxesSection.removeChild(domLetterBoxesSection.lastChild);
     }
 
-    var domUl = document.createElement('ul'); //creates a ul element and saves it in a variable.
-    domLetterBoxesSection.appendChild(domUl); // adds the Ul to the element in the DOM tree
+    var domUl = document.createElement('ul'); //Creates a ul element and saves it in a variable.
+    domLetterBoxesSection.appendChild(domUl); // Adds the Ul to the element in the DOM tree
 
-    domLetterBoxes = []; // empty array
+    domLetterBoxes = []; // Empty array
 
     for (var i = 0; i < selectedWord.length; i++) {
-        var domLi = document.createElement('li'); // creates an element of type li
-        domUl.appendChild(domLi); // adds the li to the ul.
-        domLetterBoxes.push(domLi); // saves a pointer to the li in the array
+        var domLi = document.createElement('li'); // Creates an element of type li
+        domUl.appendChild(domLi); // Adds the li to the ul.
+        domLetterBoxes.push(domLi); // Saves a pointer to the li in the array
 
-        //created element like: <input type="text" disabled="" value="_">
+        // Function that disables / enables letter buttons depending on which part of the game you are on
+
+        //Created element like: <input type="text" disabled="" value="_">
         var domInput = document.createElement('input');
         domLi.appendChild(domInput);
         domInput.setAttribute("type", "text");
@@ -83,9 +90,16 @@ function prepareBoxes() {
 
 
 }
-// Funktion som körs när du trycker på bokstäverna och gissar bokstav
 
-function letterPressed(domButton) { // function that allows you to press on the buttons in the game
+function updateHangmanImage() {
+    var domHangmanImg = document.getElementById('hangman');
+    domHangmanImg.setAttribute("src", "images/h" + hangmanImgNr + "." + "png");
+
+}
+
+// Function that allows you to press on the buttons in the game
+
+function letterPressed(domButton) {
     domButton.setAttribute("disabled", "");
     var guessedLetter = domButton.getAttribute("value");
     console.log("guessedLetter: " + guessedLetter);
@@ -107,23 +121,20 @@ function letterPressed(domButton) { // function that allows you to press on the 
         }
     } else {
         hangmanImgNr++;
+        updateHangmanImage();
         if (hangmanImgNr == 6) {
             endGame(true);
         }
     }
 }
 
-// Funktionen ropas vid vinst eller förlust, gör olika saker beroende av det
+// Function called if you have won or lost the game 
 
 function endGame(hangedMan) {
-    if (hangedMan) {
-        window.alert("Game Over. The correct word was " + selectedWord);
 
+    if (hangedMan) {
+        domMessages.innerHTML = "Game Over. The correct word was " + selectedWord;
     } else {
-        window.alert("Congratulations, you have guessed the correct word");
+        domMessages.innerHTML = "Congratulations, you have guessed the correct word";
     }
 }
-
-
-
-// Funktion som inaktiverar/aktiverar bokstavsknapparna beroende på vilken del av spelet du är på
