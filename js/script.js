@@ -10,7 +10,9 @@ var hangmanImgNr; // Image that shows up depending on how many incorrect guesses
 var domMessages; // Message when game is over
 var startGameBtn; // Start button
 var letterButtons; // Knapparna för bokstäverna
-var startTime; // Timer
+var domTimer;
+var gameTimerId;
+var timeSpentInSeconds;
 var remainingLetters; //
 
 
@@ -22,6 +24,7 @@ var remainingLetters; //
 function init() {
     console.log("init");
     domMessages = document.getElementById("message");
+    domTimer = document.getElementById("timer");
 } // End init
 
 window.onload = init; // Ensure that init is activated when the page is loaded
@@ -33,9 +36,12 @@ function startGame() {
     console.log("startGame");
     randomizeWord();
     prepareBoxes();
+
     hangmanImgNr = 0;
     updateHangmanImage();
 
+    timeSpentInSeconds = 0;
+    gameTimerId = setInterval(function() { updateTimer() }, 1000);
 
     var domLetterButtons = document.getElementById("letterButtons");
     for (var i = 0; i < domLetterButtons.childElementCount; i++) {
@@ -43,6 +49,11 @@ function startGame() {
         var domChild = domLetterButtons.children[i];
         domChild.firstChild.removeAttribute("disabled");
     }
+}
+
+function updateTimer() {
+    timeSpentInSeconds++; // timeSpentInSeconds = timeSpentInSeconds + 1;
+    domTimer.innerHTML = "Time spent: " + timeSpentInSeconds + " seconds.";
 }
 
 // Function that slums a word
@@ -131,6 +142,7 @@ function letterPressed(domButton) {
 // Function called if you have won or lost the game 
 
 function endGame(hangedMan) {
+    clearInterval(gameTimerId);
 
     if (hangedMan) {
         domMessages.innerHTML = "Game Over. The correct word was " + selectedWord;
